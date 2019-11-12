@@ -71,3 +71,24 @@ module.exports.validateSingleIBAN = (ibanString, resultCallback) => {
     resultCallback(false);
   }
 }
+
+module.exports.validateMultipleIBAN = (textFile, resultCallback) => {
+  // remove blob metadata from the string:
+  const textSplit = textFile.split(",")[1];
+  // open a new buffer to parse the base64 blob as a utf-8 string:
+  let buff = Buffer.from(textSplit, 'base64');
+  // split the string on endlines to an array:
+  const data = buff.toString().split("\r\n");
+
+  let resultArray =[]; // array to store results
+  // for the data array length:
+  for (let i=0; i<data.length; i++) {
+    // validate each string using the validateSingleIBAN method:
+    this.validateSingleIBAN(data[i], (result) => {
+      // if iban string is valid - push it to the array and add ';true' to the end, else add ';false':
+      result ? resultArray.push(data[i] + ";true") : resultArray.push(data[i] + ";false");
+    });
+  }
+  // return the result array in the callback:
+  return resultCallback(resultArray);
+}

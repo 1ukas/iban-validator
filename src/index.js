@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-const { validateSingleIBAN } = require('./modules/ibanValidator');
+const { validateSingleIBAN, validateMultipleIBAN } = require('./modules/ibanValidator');
 
 app.use(cors());
 app.use(bodyParser());
@@ -23,6 +23,16 @@ app.get('/api/validateSingle/', (req, res, next) => {
     }
     // send response data and close request:
     return res.send(data);
+  });
+});
+
+app.post('/api/validateFile/', (req, res, next) => {
+  // try to validate the iban's in the file:
+  validateMultipleIBAN(req.body.file, (result) => {
+    // join the result array into a string with newline separators:
+    const resultString = result.join('\n');
+    // send response string and close request:
+    return res.send(resultString);
   });
 });
 
