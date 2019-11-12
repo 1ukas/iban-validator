@@ -1,13 +1,13 @@
 # IBAN Validation API
 
-API - [`https://stormy-woodland-24325.herokuapp.com/api/`](https://stormy-woodland-24325.herokuapp.com/api/)
+API - [`https://stormy-woodland-24325.herokuapp.com/`](https://stormy-woodland-24325.herokuapp.com/api/)
 
 ## Paths
-  [`https://stormy-woodland-24325.herokuapp.com/api/validateSingle/`](https://stormy-woodland-24325.herokuapp.com/api/validateSingle/) </br>
+  [`/api/validateSingle/`](https://stormy-woodland-24325.herokuapp.com/api/validateSingle/) </br>
   Validates a single IBAN. </br>
   Takes `ibanCode` as a parameter. </br>
   
-  [`https://stormy-woodland-24325.herokuapp.com/api/validateFile/`](https://stormy-woodland-24325.herokuapp.com/api/validateFile/) </br>
+  [`/api/validateFile/`](https://stormy-woodland-24325.herokuapp.com/api/validateFile/) </br>
   Validates a file of IBANs. </br>
   Takes a base64 blob as a request body file `(req.body.file)`. </br>
 
