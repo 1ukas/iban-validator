@@ -1,6 +1,6 @@
 # IBAN Validation API
 
-API - [`https://stormy-woodland-24325.herokuapp.com/`](https://stormy-woodland-24325.herokuapp.com/api/)
+API - [`https://stormy-woodland-24325.herokuapp.com/`](https://stormy-woodland-24325.herokuapp.com/)
 
 ## Paths
   [`/api/validateSingle/`](https://stormy-woodland-24325.herokuapp.com/api/validateSingle/) </br>
