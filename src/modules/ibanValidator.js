@@ -1,7 +1,7 @@
 'use strict'
+const { getCountryCode } = require('./getCountryCode');
 
-const getCountryCode = require('./getCountryCode');
-
+// decimal representation of the alphabet:
 const LETTERS = {
   A: 10, B: 11, C: 12, D: 13, E:14, 
   F: 15, G: 16, H: 17, I: 18, J: 19, 
@@ -14,7 +14,6 @@ const LETTERS = {
 const calculateMod = (inputString, resultCallback) => {
   // parse the input substring as int:
   const n = parseInt(inputString, 10);
-  console.log(n);
   // calculate mod 97 on it and return it:
   return resultCallback(n % 97);
 }
@@ -23,41 +22,45 @@ module.exports.validateSingleIBAN = (ibanString, resultCallback) => {
   try {
     // if received data is empty throw an error:
     if (ibanString.length === 0) throw new Error('received data is empty');
-    console.log(ibanString);
     
-    // 
-    getCountryCode.getCountryCode(ibanString.substring(0,2), (result) => {
+    // get the country code from the iban string:
+    getCountryCode(ibanString.substring(0,2), (result) => {
+      // if the country code is invalid or the iban string length doesn't match - exit with a false callback:
       if (!result || ibanString.length !== result) return resultCallback(false);
 
+      // rearrange the iban string so the first 4 characters move to the end of the string:
       const rearrangedIBAN = ibanString.substring(4, ibanString.length) + ibanString.substring(0, 4);
-      console.log(rearrangedIBAN);
 
       // convert each character in the iban string to decimal:
-      const toIntIBAN = rearrangedIBAN.replace(/\D/g, (char) => {
+      const toDecimalIBAN = rearrangedIBAN.replace(/\D/g, (char) => {
         if (LETTERS[char]) return LETTERS[char];
       });
-      console.log(toIntIBAN);
 
-      // check digit test:
-      let ibanCopy = toIntIBAN;
-      let previousMod = "";
+      // begin iban check digit test:
+      let ibanCopy = toDecimalIBAN; // make a copy of the decimal iban string
+      let previousMod; // previous modulus result
+      // loop until the string is empty:
       while (ibanCopy.length > 0) {
         let substring;
-        if (previousMod === "") {
-          substring = previousMod + ibanCopy.substring(0, 9);
+        // split the iban string into substrings of length <= 9:
+        if (!previousMod) {
+          substring = ibanCopy.substring(0, 9);
           ibanCopy = ibanCopy.substring(9);
         }
         else {
-          substring = previousMod + ibanCopy.substring(0, 7);
+          substring = previousMod.toString() + ibanCopy.substring(0, 7);
           ibanCopy = ibanCopy.substring(7);
         }
 
+        // calculate the mod97 of current substring:
         previousMod = calculateMod(substring, (result) => {
-          return result.toString();
+          return result;
         });
       }
 
-      if (previousMod === "1") return resultCallback(true);
+      // if the final modulus result is 1 return true in the callback:
+      if (previousMod === 1) return resultCallback(true);
+      // else return false:
       else return resultCallback(false);
     });
   }
