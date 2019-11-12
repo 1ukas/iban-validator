@@ -2,6 +2,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const app = express();
 
@@ -10,6 +11,7 @@ const { validateSingleIBAN, validateMultipleIBAN } = require('./modules/ibanVali
 app.use(cors());
 app.use(bodyParser());
 app.use(bodyParser.urlencoded( {extended: true}));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/validateSingle/', (req, res, next) => {
   // get the ibanCode parameter, uppercase it and trim it:
@@ -34,6 +36,16 @@ app.post('/api/validateFile/', (req, res, next) => {
     // send response string and close request:
     return res.send(resultString);
   });
+});
+
+// handle root page:
+app.get('/', (req, res, next) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
+
+// handle 404:
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(__dirname, '../public/404.html'));
 });
 
 const PORT = process.env.PORT || 3000;
